@@ -7,11 +7,11 @@ import streamlit as st
 
 from botocore.exceptions import ClientError
 
-#env permissions
+# env permissions
 os.environ["AWS_PROFILE"] = "philsher"
 
 data = None
-with open('vars.json', 'r') as f:
+with open("vars.json", "r") as f:
     # Load the JSON data into a Python dictionary
     data = json.load(f)
 
@@ -20,23 +20,20 @@ with open('vars.json', 'r') as f:
 client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 
-# Format the request payload using the model's native structure.
-
-
 def my_chatbot(model_id, freeform_text):
     try:
-
+        # Format the request payload using the model's native structure.
         native_request = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": 512,
             "temperature": 0.5,
             "messages": [
-                            {
-                                "role": "user",
-                                "content": [{"type": "text", "text": freeform_text}],
-                            }
-                        ],
-                        }
+                {
+                    "role": "user",
+                    "content": [{"type": "text", "text": freeform_text}],
+                }
+            ],
+        }
 
         # Convert the native request to JSON.
         request = json.dumps(native_request)
@@ -54,14 +51,11 @@ def my_chatbot(model_id, freeform_text):
     response_text = model_response["content"][0]["text"]
     return response_text
 
-# print(my_chatbot(data["model_id"], request))
 
 st.title("Bedrock Chatbot")
 
-
 freeform_text = st.sidebar.text_area(label="What is your question?", max_chars=100)
 
-# print(freeform_text)
 if freeform_text:
     response = my_chatbot(data["model_id"], freeform_text)
     st.write(response)
