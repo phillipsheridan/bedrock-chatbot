@@ -35,10 +35,10 @@ native_request = {
 # Convert the native request to JSON.
 request = json.dumps(native_request)
 
-def my_chatbot():
+def my_chatbot(model_id, body):
     try:
     # Invoke the model with the request.
-        response = client.invoke_model(modelId=data["model_id"], body=request)
+        response = client.invoke_model(modelId=model_id, body=body)
 
     except (ClientError, Exception) as e:
         print(f"ERROR: Can't invoke '{data["model_id"]}'. Reason: {e}")
@@ -51,4 +51,4 @@ def my_chatbot():
     response_text = model_response["content"][0]["text"]
     return response_text
 
-print(my_chatbot())
+print(my_chatbot(data["model_id"], request))
