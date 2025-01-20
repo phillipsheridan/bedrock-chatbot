@@ -3,6 +3,7 @@
 import boto3
 import json
 import os
+import streamlit as st
 
 from botocore.exceptions import ClientError
 
@@ -20,25 +21,27 @@ client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 
 # Format the request payload using the model's native structure.
-native_request = {
-    "anthropic_version": "bedrock-2023-05-31",
-    "max_tokens": 512,
-    "temperature": 0.5,
-    "messages": [
-        {
-            "role": "user",
-            "content": [{"type": "text", "text": data["prompt"]}],
-        }
-    ],
-}
 
-# Convert the native request to JSON.
-request = json.dumps(native_request)
 
-def my_chatbot(model_id, body):
+def my_chatbot(model_id, freeform_text):
     try:
-    # Invoke the model with the request.
-        response = client.invoke_model(modelId=model_id, body=body)
+
+        native_request = {
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": 512,
+            "temperature": 0.5,
+            "messages": [
+                            {
+                                "role": "user",
+                                "content": [{"type": "text", "text": freeform_text}],
+                            }
+                        ],
+                        }
+
+        # Convert the native request to JSON.
+        request = json.dumps(native_request)
+        # Invoke the model with the request.
+        response = client.invoke_model(modelId=model_id, body=request)
 
     except (ClientError, Exception) as e:
         print(f"ERROR: Can't invoke '{data["model_id"]}'. Reason: {e}")
@@ -51,4 +54,14 @@ def my_chatbot(model_id, body):
     response_text = model_response["content"][0]["text"]
     return response_text
 
-print(my_chatbot(data["model_id"], request))
+# print(my_chatbot(data["model_id"], request))
+
+st.title("Bedrock Chatbot")
+
+
+freeform_text = st.sidebar.text_area(label="What is your question?", max_chars=100)
+
+# print(freeform_text)
+if freeform_text:
+    response = my_chatbot(data["model_id"], freeform_text)
+    st.write(response)
