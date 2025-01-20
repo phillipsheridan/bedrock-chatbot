@@ -9,14 +9,15 @@ from botocore.exceptions import ClientError
 #env permissions
 os.environ["AWS_PROFILE"] = "philsher"
 
+data = None
+with open('vars.json', 'r') as f:
+    # Load the JSON data into a Python dictionary
+    data = json.load(f)
+
+
 # Create a Bedrock Runtime client in the AWS Region of your choice.
 client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
-# Set the model ID, e.g., Claude 3 Haiku.
-model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
-
-# Define the prompt for the model.
-prompt = "Describe the purpose of a 'hello world' program in one line."
 
 # Format the request payload using the model's native structure.
 native_request = {
@@ -26,7 +27,7 @@ native_request = {
     "messages": [
         {
             "role": "user",
-            "content": [{"type": "text", "text": prompt}],
+            "content": [{"type": "text", "text": data["prompt"]}],
         }
     ],
 }
@@ -36,10 +37,10 @@ request = json.dumps(native_request)
 
 try:
     # Invoke the model with the request.
-    response = client.invoke_model(modelId=model_id, body=request)
+    response = client.invoke_model(modelId=data["model_id"], body=request)
 
 except (ClientError, Exception) as e:
-    print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
+    print(f"ERROR: Can't invoke '{data["model_id"]}'. Reason: {e}")
     exit(1)
 
 # Decode the response body.
