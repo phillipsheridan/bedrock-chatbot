@@ -1,4 +1,4 @@
 {
-    "prompt": "Who is the current president of the U.S.?",
+    "prompt": "What is the busiest airport in the USA?",
     "model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0"
 }
