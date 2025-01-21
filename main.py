@@ -25,7 +25,7 @@ def my_chatbot(model_id, freeform_text):
         # Format the request payload using the model's native structure.
         native_request = {
             "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": 512,
+            "max_tokens": 1500,
             "temperature": 0.5,
             "messages": [
                 {
@@ -54,7 +54,7 @@ def my_chatbot(model_id, freeform_text):
 
 st.title("Bedrock Chatbot")
 
-freeform_text = st.sidebar.text_area(label="What is your question?", max_chars=100)
+freeform_text = st.sidebar.text_area(label="What is your question?", max_chars=1500)
 
 if freeform_text:
     response = my_chatbot(data["model_id"], freeform_text)
