@@ -10,6 +10,8 @@ from botocore.exceptions import ClientError
 # env permissions
 os.environ["AWS_PROFILE"] = "philsher"
 
+# Todo: Implement Cognito authentication
+
 data = None
 with open("vars.json", "r") as f:
     # Load the JSON data into a Python dictionary
